@@ -1,12 +1,35 @@
-<%= simple_form_for(@frame) do |f| %>
-  <%= f.error_notification %>
-
-  <div class="form-inputs">
-    <%= f.input :description %>
-    <%= f.association :story %>
+<%= form_for [@story, @frame], :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="control-group">
+    <%= f.label :description, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :description, :class => 'text_field' %>
+    </div>
   </div>
+
+    <%= image_tag @frame.image.large.url, :id => 'cropbox' %>
+
+  <% %w[x y w h].each do |attribute| %>
+    <%= f.hidden_field "crop_#{attribute}" %>
+  <% end %>
 
   <div class="form-actions">
-    <%= f.button :submit %>
+    <%= f.submit nil, :class => 'btn btn-primary  btn-mini' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                story_path(@story), :class => 'btn btn-mini' %>
+    <%= link_to 'Default', '', :class => 'btn btn-mini btn-success' , :id => 'make_default'%>
+
   </div>
 <% end %>
+
+<script type="text/javascript" charset="utf-8">
+    $(function () {
+      $('#make_default').click(function(event) {
+        event.preventDefault();
+        $.ajax({
+          url: '<%= make_default_story_frames_path %>',
+          type: 'POST',
+          data: {id : <%= @frame.id %>, story_id : <%= @story.id %>}
+        });
+      });
+    });
+</script>
