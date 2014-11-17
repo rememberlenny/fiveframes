@@ -62,3 +62,5 @@ gem 'simple_form'
 gem 'delayed_job_active_record'
 gem 'validates_formatting_of'
 gem 'tzinfo-data'
+
+gem 'rails_12factor', group: :production
