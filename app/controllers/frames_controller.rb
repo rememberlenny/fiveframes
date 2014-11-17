@@ -1,51 +1,83 @@
 class FramesController < ApplicationController
-  before_action :set_frame, only: [:show, :edit, :update, :destroy]
-
-  # GET /frames
-  # GET /frames.json
+   # GET /frames.json
   def index
-    @frames = Frame.all
+
+    @story = Story.find(params[:story_id])
+
+    @frames = @story.frames
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @frames }
+    end
   end
 
   # GET /frames/1
   # GET /frames/1.json
   def show
+    @frame = Frame.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @frame }
+    end
   end
 
   # GET /frames/new
+  # GET /frames/new.json
   def new
-    @frame = Frame.new
+    @story = Story.find(params[:story_id])
+    @frame = @story.frames.build
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render json: @frame }
+    end
   end
 
   # GET /frames/1/edit
   def edit
+    #@story = Story.find(params[:story_id])
+
+    @frame = Frame.find(params[:id])
+    # @frame = Frame.find(params[:id])
   end
 
   # POST /frames
   # POST /frames.json
   def create
-    @frame = Frame.new(frame_params)
+    @frame = Frame.new(params[:frame])
 
-    respond_to do |format|
-      if @frame.save
-        format.html { redirect_to @frame, notice: 'Frame was successfully created.' }
-        format.json { render :show, status: :created, location: @frame }
-      else
-        format.html { render :new }
-        format.json { render json: @frame.errors, status: :unprocessable_entity }
+    if @frame.save
+      respond_to do |format|
+        format.html {
+          render :json => [@frame.to_jq_upload].to_json,
+          :content_type => 'text/html',
+          :layout => false
+        }
+        format.json {
+          render :json => [@frame.to_jq_upload].to_json
+        }
       end
+    else
+      render :json => [{:error => "custom_failure"}], :status => 304
     end
   end
 
-  # PATCH/PUT /frames/1
-  # PATCH/PUT /frames/1.json
+  # PUT /frames/1
+  # PUT /frames/1.json
   def update
+
+    @story = Story.find(params[:story_id])
+
+    @frame = @story.frames.find(params[:id])
+
     respond_to do |format|
-      if @frame.update(frame_params)
-        format.html { redirect_to @frame, notice: 'Frame was successfully updated.' }
-        format.json { render :show, status: :ok, location: @frame }
+      if @frame.update_attributes(frame_params)
+        format.html { redirect_to story_path(@story), notice: 'Frame was successfully updated.' }
+        format.json { head :no_content }
       else
-        format.html { render :edit }
+        format.html { render action: "edit" }
         format.json { render json: @frame.errors, status: :unprocessable_entity }
       end
     end
@@ -54,21 +86,32 @@ class FramesController < ApplicationController
   # DELETE /frames/1
   # DELETE /frames/1.json
   def destroy
+    #@story = Story.find(params[:story_id])
+    #@frame = @story.frames.find(params[:id])
+    @frame = Frame.find(params[:id])
     @frame.destroy
+
     respond_to do |format|
-      format.html { redirect_to frames_url, notice: 'Frame was successfully destroyed.' }
-      format.json { head :no_content }
+      format.html { redirect_to root_path }
+      format.js
+    end
+  end
+
+  def make_default
+    @frame = Frame.find(params[:id])
+    @story = Story.find(params[:story_id])
+
+    @story.cover = @frame.id
+    @story.save
+
+    respond_to do |format|
+      format.js
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_frame
-      @frame = Frame.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def frame_params
-      params.require(:frame).permit(:description, :story_id)
-    end
+  def frame_params
+    params.require(:frame).permit(:description, :story_id, :image)
+  end
 end
