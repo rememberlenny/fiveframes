@@ -1,0 +1,58 @@
+// Place all the styles related to the pages controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.full-frame-hero{
+  position: relative;
+  width: 100%;
+  background-image: url("<%= image_path('l.jpg') %>");
+  background-size: cover;
+  background-position: center center;
+}
+
+.text-silo{
+  position: absolute;
+  top: 30%;
+  h1{
+    font-weight: 100;
+  }
+  p{
+    font-weight: 500;
+  }
+}
+
+.dark-explaination{
+  padding-top: 10%;
+  padding-bottom: 10%;
+  background: #202020;
+  h2, p{
+    font-weight: 100;
+    color: #FFF;
+  }
+  p{
+    margin-top: 100px;
+  }
+  .image-slide{
+    width: 15%;
+  }
+
+  .type-out-message{
+    background: #FFF;
+    display: inline-block;
+    padding: .8em 1.2em;
+    border-radius: 5px;
+    font-size: 1.3em;
+  }
+  .ghost-message{
+    display: none;
+  }
+}
+
+.hidden{
+  opacity: 0.2;
+}
+
+.instructions-set{
+  height: 200px;
+  display: block;
+}
