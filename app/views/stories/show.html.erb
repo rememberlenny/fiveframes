@@ -1,24 +1,51 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <h1>Story</h1>
 
-<p>
-  <strong>Name:</strong>
-  <%= @story.name %>
-</p>
+  <input type="hidden" id="storyID" value="<%= @story.id %>">
 
-<p>
-  <strong>Description:</strong>
-  <%= @story.description %>
-</p>
+  <p>
+    <b>Name: </b>
+    <%= @story.name %>
+  </p>
 
-<p>
-  <strong>Token:</strong>
-  <%= @story.token %>
-</p>
+  <p>
+    <b>Description: </b>
+    <%= @story.description %>
+  </p>
 
-<p>
-  <strong>Cover:</strong>
-  <%= @story.cover %>
-</p>
+  <div class="form-actions">
+    <%= link_to 'Back', stories_path, :class => 'btn btn-mini'  %>
+    <%= link_to 'Edit story', edit_story_path(@story), :class => 'btn btn-mini' %>
+    <%= link_to 'Delete story', story_path(@story), :method => 'delete', :confirm => 'Are you sure?', :class => 'btn btn-mini' %>
+  </div>
 
-<%= link_to 'Edit', edit_story_path(@story) %> |
-<%= link_to 'Back', stories_path %>
+<h2>Pictures</h2>
+</div>
+
+<div class="row">
+  <ul class="thumbnails files">
+<% unless @frames.empty? %>
+  <% @frames.each do |pic| %>
+    <li class="span3" id="frame_<%= pic.id %>">
+    <div class="thumbnail">
+      <%= image_tag pic.image.url %>
+      <div class="caption">
+        <p style="text-align: center;">
+        <%= link_to "Edit frame", frame_path(pic) %>
+
+        <%=
+          link_to "Delete frame", pic,
+            :data => { :confirm => "Are you sure?" },
+            :method => :delete
+          %>
+
+        </p>
+      </div>
+    </div>
+    </li>
+  <% end %>
+<% end %>
+</ul>
+</div>
+
+

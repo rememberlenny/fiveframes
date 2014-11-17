@@ -1,31 +1,30 @@
-<h1>Listing stories</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Token</th>
-      <th>Cover</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
+<div class="row">
+  <h1>Stories</h1>
+  <%= link_to 'New', new_story_path, :class => 'btn btn-mini' %>
+  <p></p>
+  <ul class="thumbnails files">
     <% @stories.each do |story| %>
-      <tr>
-        <td><%= story.name %></td>
-        <td><%= story.description %></td>
-        <td><%= story.token %></td>
-        <td><%= story.cover %></td>
-        <td><%= link_to 'Show', story %></td>
-        <td><%= link_to 'Edit', edit_story_path(story) %></td>
-        <td><%= link_to 'Destroy', story, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+        <li class="span4" id="story_<%= story.id %>">
+          <div class="thumbnail">
+            <% if story.frames.first %>
+            <%= link_to image_tag(story.frames.first.image.url), story_path(story) %>
+            <% else %>
+              N/A
+            <% end %>
+            <div class="caption">
+              <p style="text-align: center;">
+                <%= story.name.truncate(14) %>
+                <%= link_to "Show", story_path(story) %>
+                <%= link_to "Edit", edit_story_path(story) %>
+                <%= link_to "Delete", story,
+                  :data => { :confirm => "Are you sure?" },
+                  :method => :delete
+                %>
+              </p>
+            </div>
+          </div>
+        </li>
     <% end %>
-  </tbody>
-</table>
+  </ul>
 
-<br>
-
-<%= link_to 'New Story', new_story_path %>
+</div>

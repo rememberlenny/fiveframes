@@ -1,24 +1,41 @@
 class StoriesController < ApplicationController
-  before_action :set_story, only: [:show, :edit, :update, :destroy]
-
   # GET /stories
   # GET /stories.json
   def index
     @stories = Story.all
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @stories }
+    end
   end
 
   # GET /stories/1
   # GET /stories/1.json
   def show
+    @story  = Story.find(params[:id])
+    @frames = @story.frames
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @story }
+    end
   end
 
   # GET /stories/new
+  # GET /stories/new.json
   def new
     @story = Story.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render json: @story }
+    end
   end
 
   # GET /stories/1/edit
   def edit
+    @story = Story.find(params[:id])
   end
 
   # POST /stories
@@ -30,30 +47,38 @@ class StoriesController < ApplicationController
       if @story.save
 
         if params[:images]
-          #===== The magic is here ;)
+          # The magic is here ;)
           params[:images].each { |image|
             @story.frames.create(image: image)
           }
         end
 
         format.html { redirect_to @story, notice: 'Story was successfully created.' }
-        format.json { render :show, status: :created, location: @story }
+        format.json { render json: @story, status: :created, location: @story }
       else
-        format.html { render :new }
+        format.html { render action: "new" }
         format.json { render json: @story.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # PATCH/PUT /stories/1
-  # PATCH/PUT /stories/1.json
+  # PUT /stories/1
+  # PUT /stories/1.json
   def update
+    @story = Story.find(params[:id])
+
     respond_to do |format|
-      if @story.update(story_params)
+      if @story.update_attributes(story_params)
+        if params[:images]
+          # The magic is here ;)
+          params[:images].each { |image|
+            @story.frames.create(image: image)
+          }
+        end
         format.html { redirect_to @story, notice: 'Story was successfully updated.' }
-        format.json { render :show, status: :ok, location: @story }
+        format.json { head :no_content }
       else
-        format.html { render :edit }
+        format.html { render action: "edit" }
         format.json { render json: @story.errors, status: :unprocessable_entity }
       end
     end
@@ -62,21 +87,21 @@ class StoriesController < ApplicationController
   # DELETE /stories/1
   # DELETE /stories/1.json
   def destroy
+    @story = Story.find(params[:id])
     @story.destroy
+
     respond_to do |format|
-      format.html { redirect_to stories_url, notice: 'Story was successfully destroyed.' }
+      format.html { redirect_to stories_url }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_story
-      @story = Story.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def story_params
-      params.require(:story).permit(:name, :description, :token, :cover)
-    end
+  def story_params
+    params.require(:story).permit(:description,
+                                    :name,
+                                    :frames
+                                   )
+  end
 end
