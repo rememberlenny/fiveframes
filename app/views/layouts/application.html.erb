@@ -12,7 +12,16 @@
   </head>
 
   <body>
-
+    <div class="large-12 top-float-nav">
+      <ul class="inline-list">
+        <% if !current_user.nil? %>
+        <li><%= link_to 'Account', edit_user_registration_path %></li>
+        <li><%= link_to 'Logout', destroy_user_session_path, :method => :delete %></li>
+        <% else %>
+        <li><%= link_to 'Login', new_user_session_path %></li>
+        <% end %>
+      </ul>
+    </div>
     <%= yield %>
     <%= javascript_include_tag "application" %>
   </body>
