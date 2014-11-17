@@ -28,6 +28,14 @@ class StoriesController < ApplicationController
 
     respond_to do |format|
       if @story.save
+
+        if params[:images]
+          #===== The magic is here ;)
+          params[:images].each { |image|
+            @story.frames.create(image: image)
+          }
+        end
+
         format.html { redirect_to @story, notice: 'Story was successfully created.' }
         format.json { render :show, status: :created, location: @story }
       else
